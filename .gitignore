@@ -1,0 +1,39 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
+
+# Build / packaging
+build/
+dist/
+*.egg-info/
+
+# Models and generated artifacts
+outputs/models/*.pkl
+outputs/models/*.joblib
+outputs/figures/*.png
+outputs/figures/*.jpg
+outputs/figures/*.jpeg
+outputs/figures/*.svg
+outputs/tables/*.csv
+outputs/tables/*.xlsx
+
+# Data files
+# Keep raw and processed data out of version control by default
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep

@@ -1,0 +1,16 @@
+name: churn_prediction
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pandas
+  - numpy
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - xgboost
+  - shap
+  - joblib
+  - openpyxl
+  - pip
