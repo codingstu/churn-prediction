@@ -1,3 +1,4 @@
+import { DataTable } from "@/components/DataTable";
 import { FigureCard } from "@/components/FigureCard";
 import { MetricCard } from "@/components/MetricCard";
 import { formatCurrency, formatDecimal, formatPercent } from "@/lib/format";
@@ -57,7 +58,7 @@ export default async function HomePage() {
       </section>
 
       <section className="grid grid--two">
-        <article className="card">
+        <article className="card card--elevated">
           <p className="eyebrow">Model status</p>
           <h3>{bestModel?.model ?? "Unavailable"}</h3>
           <div className="grid" style={{ marginTop: 16 }}>
@@ -71,30 +72,31 @@ export default async function HomePage() {
           </p>
         </article>
 
-        <article className="card">
+        <article className="card card--elevated">
           <p className="eyebrow">Immediate retention focus</p>
           <h3>Highest-value intervention queue</h3>
-          <div className="table-wrap" style={{ marginTop: 16 }}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Customer ID</th>
-                  <th>Churn Probability</th>
-                  <th>Monthly Charges</th>
-                  <th>Priority Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                {topTargets.map((row) => (
-                  <tr key={row.customerID}>
-                    <td>{row.customerID}</td>
-                    <td>{formatDecimal(row.churn_probability)}</td>
-                    <td>{formatCurrency(row.MonthlyCharges)}</td>
-                    <td>{formatDecimal(row.priority_score, 2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ marginTop: 16 }}>
+            <DataTable
+              rows={topTargets}
+              columns={[
+                { key: "customerID", header: "Customer ID" },
+                {
+                  key: "churn_probability",
+                  header: "Churn Probability",
+                  render: (row) => formatDecimal(row.churn_probability),
+                },
+                {
+                  key: "MonthlyCharges",
+                  header: "Monthly Charges",
+                  render: (row) => formatCurrency(row.MonthlyCharges),
+                },
+                {
+                  key: "priority_score",
+                  header: "Priority Score",
+                  render: (row) => formatDecimal(row.priority_score, 2),
+                },
+              ]}
+            />
           </div>
         </article>
       </section>

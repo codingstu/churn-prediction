@@ -6,7 +6,7 @@ type MetricCardProps = {
 
 export function MetricCard({ label, value, hint }: MetricCardProps) {
   return (
-    <article className="card metric-card">
+    <article className="card card--elevated metric-card">
       <p className="metric-card__label">{label}</p>
       <p className="metric-card__value">{value}</p>
       <p className="metric-card__hint">{hint}</p>

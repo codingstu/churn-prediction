@@ -50,14 +50,14 @@ export default function RootLayout({
                 </Link>
               ))}
             </nav>
-            <div className="sidebar__footer card compact-card">
+            <div className="sidebar__footer card card--inset compact-card">
               <p className="eyebrow">Environment</p>
               <p>Python analytics stay in Conda.</p>
               <p>Frontend dependencies stay isolated in Next.js.</p>
             </div>
           </aside>
           <div className="content-shell">
-            <header className="topbar">
+            <header className="topbar card card--inset">
               <div>
                 <p className="eyebrow">IBM Telco mainline</p>
                 <h2>Analytics outputs mapped into business-facing pages</h2>

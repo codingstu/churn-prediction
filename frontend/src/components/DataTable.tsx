@@ -22,26 +22,28 @@ export function DataTable<T extends Record<string, unknown>>({
   }
 
   return (
-    <div className="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            {columns.map((column) => (
-              <th key={String(column.key)}>{column.header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, index) => (
-            <tr key={index}>
-              {columns.map((column) => {
-                const value = row[column.key as keyof T];
-                return <td key={String(column.key)}>{column.render ? column.render(row) : String(value ?? "")}</td>;
-              })}
+    <div className="table-shell">
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              {columns.map((column) => (
+                <th key={String(column.key)}>{column.header}</th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr key={index}>
+                {columns.map((column) => {
+                  const value = row[column.key as keyof T];
+                  return <td key={String(column.key)}>{column.render ? column.render(row) : String(value ?? "")}</td>;
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
