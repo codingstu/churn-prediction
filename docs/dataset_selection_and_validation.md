@@ -34,6 +34,7 @@ Validation observations:
 - target values are consistent with binary churn labels: `Yes` / `No`
 - `TotalCharges` contains 11 blank values, which is a known and expected cleaning issue for this dataset
 - row count and schema are internally consistent with the standard public version
+- the repository preprocessing baseline now treats schema validation, `customerID` uniqueness, and raw `Churn` label validation as mandatory acceptance checks before cleaning proceeds
 
 Authenticity assessment:
 - strong authenticity signal from schema consistency
@@ -157,7 +158,22 @@ This should be handled as a separate branch of work, not merged into the current
 
 ---
 
-## 6. Final Decision Summary
+## 6. Cleaning Acceptance Baseline
+
+The current repository should treat the IBM Telco cleaning stage as accepted only when all of the following are true:
+
+- the raw file at [`data/raw/Telco Customer Churn (IBM)/WA_Fn-UseC_-Telco-Customer-Churn.csv`](data/raw/Telco%20Customer%20Churn%20%28IBM%29/WA_Fn-UseC_-Telco-Customer-Churn.csv) matches the expected 21-column schema
+- [`customerID`](src/preprocess.py:38) is non-null and unique
+- raw [`Churn`](src/preprocess.py:37) values are limited to `Yes` and `No`
+- `TotalCharges` blank strings are converted to missing values and then coerced to numeric in [`clean_telco_data()`](src/preprocess.py:116)
+- the cleaned output in [`data/processed/cleaned_churn.csv`](data/processed/cleaned_churn.csv) contains 7032 rows for the current raw dataset version
+- the audit table in [`outputs/tables/data_cleaning_audit.csv`](outputs/tables/data_cleaning_audit.csv) records raw rows, retained rows, dropped rows, blank `TotalCharges`, invalid target values, and duplicate identifiers
+
+These checks are intended to catch silent schema drift and make preprocessing behavior auditable without changing the project modeling scope.
+
+---
+
+## 7. Final Decision Summary
 
 - IBM Telco dataset: **validated, usable, primary**
 - RavenStack synthetic SaaS dataset: **validated structurally, usable, extension only**

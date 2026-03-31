@@ -192,11 +192,17 @@ Raw Data
 10. 检查类别不平衡
 11. 使用 stratified split
 12. 导出 [`data/processed/cleaned_churn.csv`](data/processed/cleaned_churn.csv)
+13. 对原始 schema、主键唯一性与目标值域执行显式校验
+14. 导出可审计的清洗摘要到 [`outputs/tables/data_cleaning_audit.csv`](outputs/tables/data_cleaning_audit.csv)
 
 ### 8.3 对应实现
-- 清洗主入口：[`clean_telco_data()`](src/preprocess.py:33)
-- 建模数据准备：[`prepare_model_frame()`](src/preprocess.py:56)
-- 保存清洗结果：[`save_processed_data()`](src/preprocess.py:64)
+- 清洗主入口：[`clean_telco_data()`](src/preprocess.py:116)
+- schema 校验：[`validate_raw_schema()`](src/preprocess.py:59)
+- 主键校验：[`validate_customer_ids()`](src/preprocess.py:74)
+- 目标值域校验：[`validate_target_values()`](src/preprocess.py:90)
+- 建模数据准备：[`prepare_model_frame()`](src/preprocess.py:157)
+- 保存清洗结果：[`save_processed_data()`](src/preprocess.py:165)
+- 保存清洗审计：[`save_cleaning_audit()`](src/preprocess.py:172)
 
 ---
 
@@ -372,19 +378,19 @@ Raw Data
 
 ---
 
-## 15. 面向未来前端接入的架构要求
+## 15. 面向前端接入与已实现展示层的架构要求
 
-当前不直接开发前端，但必须在方案层面提前约束结构，以避免后续返工。
+当前仓库已实现 [`frontend/`](frontend/) 展示层，但仍必须在方案层面持续约束结构，以避免后续返工。
 
 ### 15.1 架构分层
 1. **Data layer**：[`data/`](data/)
 2. **Analytics layer**：[`src/`](src/)
 3. **Output layer**：[`outputs/`](outputs/)
 4. **Documentation layer**：[`docs/`](docs/)
-5. **Presentation layer (future)**：未来新增 [`frontend/`](frontend/) 目录
+5. **Presentation layer**：已实现的 [`frontend/`](frontend/) Next.js 展示层
 
 ### 15.2 前端接入目标
-未来可通过 React 或 Next.js 接入以下页面：
+当前已由 [`frontend/`](frontend/) 提供以下页面能力，并继续作为后续增强基线：
 - churn dashboard
 - model comparison view
 - top retention targets table
@@ -455,6 +461,8 @@ churn_prediction/
 - [`environment.yml`](environment.yml) 已成为正式环境基线，[`requirements.txt`](requirements.txt) 当前仅保留为过渡文件
 - 项目专用 Conda 环境 `churn_prediction` 已创建并验证可见
 - 当前系统 Python 中与本仓库直接相关的非 Conda 分析依赖已完成清理
+- 预处理阶段现已输出[`outputs/tables/data_cleaning_audit.csv`](outputs/tables/data_cleaning_audit.csv)，用于记录输入行数、删除行数、`TotalCharges` 空白数量、异常标签数量与重复主键数量
+- 首页与核心展示卡片已完成一轮展示层优化，图表容器改为保持原始宽高比，避免[`FigureCard`](frontend/src/components/FigureCard.tsx:10)中的图片在响应式布局下变形
 
 ---
 
@@ -483,12 +491,13 @@ churn_prediction/
 ### 本轮真实运行结果摘要
 - 清洗结果：7032 条有效记录，删除 11 条 `TotalCharges` 空值记录
 - 已生成数据概览表 [`dataset_overview.csv`](outputs/tables/dataset_overview.csv) 与数值统计表 [`numeric_summary.csv`](outputs/tables/numeric_summary.csv)
+- 已新增清洗审计表 [`data_cleaning_audit.csv`](outputs/tables/data_cleaning_audit.csv)，用于解释 7043 条原始记录为何保留 7032 条有效记录
 - 已生成 EDA 图表到 [`outputs/figures/`](outputs/figures/)
 - 模型比较结果已写入 [`model_performance_comparison.csv`](outputs/tables/model_performance_comparison.csv)，当前包含 Logistic Regression、Random Forest 与 XGBoost
 - 本轮最优模型为 [`logistic_regression`](src/train.py:60)，已保存到 [`outputs/models/best_model.joblib`](outputs/models/best_model.joblib)
 - 已导出 explainability 结果到 [`outputs/tables/logistic_coefficients.csv`](outputs/tables/logistic_coefficients.csv)、[`logistic_regression_shap_summary.png`](outputs/figures/logistic_regression_shap_summary.png) 与 [`logistic_regression_shap_local_waterfall.png`](outputs/figures/logistic_regression_shap_local_waterfall.png)
 - 已导出 retention prioritization 结果到 [`outputs/tables/customer_priority_table.csv`](outputs/tables/customer_priority_table.csv) 与 [`outputs/tables/top_20_retention_targets.csv`](outputs/tables/top_20_retention_targets.csv)
-- 前端开发服务器已成功验证可访问，展示入口位于 [`frontend/`](frontend/)
+- 前端展示层已完成卡片与表格基元收敛，并通过[`frontend/src/app/globals.css`](frontend/src/app/globals.css)中的图表容器样式修复图片拉伸问题
 
 结论：当前推进方向与 proposal 一致，尚未出现题目跑偏；当前主线已经形成**分析 pipeline + 标准化输出 + Next.js 展示层**的可运行闭环。
 

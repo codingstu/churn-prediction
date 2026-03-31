@@ -13,7 +13,13 @@ from src.evaluate import (
     save_performance_table,
 )
 from src.explain import run_explainability
-from src.preprocess import clean_telco_data, load_raw_data, prepare_model_frame, save_processed_data
+from src.preprocess import (
+    clean_telco_data,
+    load_raw_data,
+    prepare_model_frame,
+    save_cleaning_audit,
+    save_processed_data,
+)
 from src.prioritize import build_priority_table, save_priority_outputs
 from src.train import save_model, train_models
 
@@ -31,7 +37,9 @@ def run_cleaning_stage() -> Path:
     raw_df = load_raw_data(RAW_DATA_PATH)
     cleaned_df, summary = clean_telco_data(raw_df)
     save_processed_data(cleaned_df, PROCESSED_DATA_PATH)
+    audit_path = save_cleaning_audit(summary)
     print(f"cleaning_summary={summary}")
+    print(f"cleaning_audit={audit_path}")
     return PROCESSED_DATA_PATH
 
 

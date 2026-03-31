@@ -152,7 +152,10 @@ The current state includes:
 - reproducible outputs under [`outputs/`](outputs/),
 - a Next.js presentation layer under [`frontend/`](frontend/),
 - route-based pages for dashboard, model comparison, retention priority, explainability, and business insights,
-- a frontend asset route that serves repository figures without moving analytics files into the frontend codebase.
+- a frontend asset route that serves repository figures without moving analytics files into the frontend codebase,
+- stable consumption of preprocessing audit output such as [`outputs/tables/data_cleaning_audit.csv`](outputs/tables/data_cleaning_audit.csv) when needed for future UI extension,
+- a refined card and table presentation baseline that reduces duplicated page markup and improves visual consistency,
+- figure containers that preserve image aspect ratio to prevent dashboard chart distortion.
 
 ---
 
@@ -161,3 +164,8 @@ The current state includes:
 The project now proceeds as an analytics system with an implemented presentation layer.
 
 The active frontend stack is **Next.js**, and it should remain the default presentation-layer technology for this repository. React remains only a fallback option for materially smaller future visualization work, not the primary baseline.
+
+The current frontend enhancement direction should continue to follow three rules:
+- prefer shared UI primitives over page-specific duplicated markup,
+- keep figure rendering aspect-ratio-safe in reusable components such as [`FigureCard`](frontend/src/components/FigureCard.tsx:10),
+- keep frontend styling changes decoupled from analytics logic and output contracts.

@@ -109,9 +109,13 @@ Current implemented modules:
 ### Step 1: Data Cleaning
 Use [`src/preprocess.py`](src/preprocess.py) to:
 - inspect raw IBM churn data,
+- validate the expected IBM Telco schema,
+- validate [`customerID`](src/preprocess.py:38) completeness and uniqueness,
+- validate raw [`Churn`](src/preprocess.py:37) labels,
 - clean `TotalCharges`,
 - encode `Churn`,
-- export cleaned output to [`data/processed/cleaned_churn.csv`](data/processed/cleaned_churn.csv).
+- export cleaned output to [`data/processed/cleaned_churn.csv`](data/processed/cleaned_churn.csv),
+- export preprocessing audit output to [`outputs/tables/data_cleaning_audit.csv`](outputs/tables/data_cleaning_audit.csv).
 
 ### Step 2: Exploratory Data Analysis
 Use [`src/eda.py`](src/eda.py) to:
@@ -159,12 +163,25 @@ Use [`src/run_pipeline.py`](src/run_pipeline.py) to run the main IBM Telco workf
 
 Expected outputs include:
 - [`data/processed/cleaned_churn.csv`](data/processed/cleaned_churn.csv)
+- [`outputs/tables/data_cleaning_audit.csv`](outputs/tables/data_cleaning_audit.csv)
 - [`outputs/tables/dataset_overview.csv`](outputs/tables/dataset_overview.csv)
 - [`outputs/tables/model_performance_comparison.csv`](outputs/tables/model_performance_comparison.csv)
 - [`outputs/models/`](outputs/models/)
 - [`outputs/tables/customer_priority_table.csv`](outputs/tables/customer_priority_table.csv)
 - [`outputs/tables/top_20_retention_targets.csv`](outputs/tables/top_20_retention_targets.csv)
 - figures under [`outputs/figures/`](outputs/figures/)
+
+## Data Cleaning Acceptance Rules
+
+The current IBM Telco preprocessing baseline is considered valid only if all of the following hold:
+
+- raw input path remains [`data/raw/Telco Customer Churn (IBM)/WA_Fn-UseC_-Telco-Customer-Churn.csv`](data/raw/Telco%20Customer%20Churn%20%28IBM%29/WA_Fn-UseC_-Telco-Customer-Churn.csv)
+- the raw dataset contains the expected 21-column IBM Telco schema checked by [`validate_raw_schema()`](src/preprocess.py:59)
+- [`customerID`](src/preprocess.py:38) is present, non-null, and unique under [`validate_customer_ids()`](src/preprocess.py:74)
+- raw [`Churn`](src/preprocess.py:37) values only contain `Yes` and `No` under [`validate_target_values()`](src/preprocess.py:90)
+- `TotalCharges` blank strings are normalized before numeric conversion in [`clean_telco_data()`](src/preprocess.py:116)
+- the known blank-`TotalCharges` records are removed from the cleaned output, yielding 7032 rows for the current dataset version
+- the preprocessing audit table in [`outputs/tables/data_cleaning_audit.csv`](outputs/tables/data_cleaning_audit.csv) explains the retained and dropped counts
 
 ## Environment Transition Note
 

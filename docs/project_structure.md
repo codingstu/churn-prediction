@@ -65,7 +65,12 @@ Expected example:
 Stores figure outputs for the paper and future dashboard usage.
 
 ### [`outputs/tables/`](outputs/tables/)
-Stores tabular outputs such as model comparison and priority ranking tables.
+Stores tabular outputs such as model comparison, priority ranking tables, and preprocessing audit artifacts.
+
+Expected examples:
+- [`outputs/tables/dataset_overview.csv`](outputs/tables/dataset_overview.csv)
+- [`outputs/tables/data_cleaning_audit.csv`](outputs/tables/data_cleaning_audit.csv)
+- [`outputs/tables/model_performance_comparison.csv`](outputs/tables/model_performance_comparison.csv)
 
 ### [`outputs/models/`](outputs/models/)
 Stores serialized trained models.
@@ -84,6 +89,11 @@ Current and planned examples:
 
 ### [`frontend/`](frontend/)
 Stores the implemented Next.js presentation layer. It consumes stable analytics outputs from [`outputs/`](outputs/) through a dedicated frontend data-access layer and remains separate from the Python analytics codebase.
+
+Current examples include:
+- reusable display components such as [`FigureCard`](frontend/src/components/FigureCard.tsx:10), [`MetricCard`](frontend/src/components/MetricCard.tsx:7), and [`DataTable`](frontend/src/components/DataTable.tsx:15)
+- shared layout and styling under [`frontend/src/app/layout.tsx`](frontend/src/app/layout.tsx:29) and [`frontend/src/app/globals.css`](frontend/src/app/globals.css)
+- route-based pages under [`frontend/src/app/`](frontend/src/app/)
 
 ---
 
